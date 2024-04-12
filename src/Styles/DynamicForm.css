@@ -1,0 +1,137 @@
+/* DynamicForm.css */
+.form-container {
+  margin: 20px;
+}
+
+.category {
+  margin-bottom: 20px;
+}
+
+.main-category {
+  border-bottom: 2px solid #007bff;
+  padding-bottom: 10px;
+}
+
+.description-table {
+  width: 100%;
+  border-collapse: collapse;
+  margin-top: 10px;
+}
+
+.description-table th,
+.description-table td {
+  padding: 8px;
+  border: 1px solid #ddd;
+}
+
+.description-table th {
+  background-color: #f2f2f2;
+}
+
+.description-table input[type="text"],
+.description-table input[type="date"],
+.description-table select {
+  width: 100%;
+  padding: 6px;
+  box-sizing: border-box;
+}
+
+.description-table input[type="text"],
+.description-table input[type="date"] {
+  border: 1px solid #ccc;
+}
+
+.description-table button {
+  padding: 6px 12px;
+  background-color: #007bff;
+  color: #fff;
+  border: none;
+  cursor: pointer;
+  margin-left: 5px;
+}
+
+.description-table button:hover {
+  background-color: #0056b3;
+}
+
+.add-main-category {
+  margin-top: 10px;
+}
+
+.add-main-category button {
+  padding: 8px 16px;
+  background-color: #28a745;
+  color: #fff;
+  border: none;
+  cursor: pointer;
+}
+
+.add-main-category button:hover {
+  background-color: #218838;
+}
+
+.add-main-category select {
+  padding: 6px;
+}
+
+.add-description button {
+  padding: 6px 12px;
+  background-color: #ffc107;
+  color: #fff;
+  border: none;
+  cursor: pointer;
+}
+
+.add-description button:hover {
+  background-color: #e0a800;
+}
+
+.action-buttons {
+  margin-right: 8px;
+  display: flex;
+  flex-direction: row;
+}
+
+.category {
+  border: 1px solid #ccc;
+  border-radius: 5px;
+  margin-bottom: 20px;
+  padding: 20px;
+}
+
+.main-category {
+  font-size: 20px;
+  margin-bottom: 10px;
+}
+
+.add-main-category {
+  display: flex;
+  align-items: center;
+  margin-bottom: 10px;
+  gap: 20px;
+}
+
+.add-main-category select {
+  flex: 1;
+  margin-right: 10px;
+  padding: 5px;
+}
+
+.weight-container {
+  display: flex;
+  flex-direction: column;
+}
+
+.weight-container span {
+  margin-bottom: 5px;
+}
+
+.description-weight {
+  font-weight: bold;
+  color: #007bff;
+}
+
+.description-weight-input {
+  width: 20px;
+  margin-right: 10px;
+}
