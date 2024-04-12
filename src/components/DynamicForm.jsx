@@ -170,26 +170,26 @@ const DynamicForm = () => {
     setFormData(updatedFormData);
   };
 
-  const handleRemoveDescription = (mainCategoryId, descriptionId) => {
-    const updatedFormData = formData.map((mainCategory) => {
-      if (mainCategory.id === mainCategoryId) {
-        const updatedDescriptions = mainCategory.descriptions.filter(
-          (description) => description.id !== descriptionId
-        );
-        const totalWeight = updatedDescriptions.reduce(
-          (acc, desc) => acc + parseInt(desc.weight || 0),
-          0
-        );
-        return {
-          ...mainCategory,
-          descriptions: updatedDescriptions,
-          weight: totalWeight,
-        };
-      }
-      return mainCategory;
-    });
-    setFormData(updatedFormData);
-  };
+  // const handleRemoveDescription = (mainCategoryId, descriptionId) => {
+  //   const updatedFormData = formData.map((mainCategory) => {
+  //     if (mainCategory.id === mainCategoryId) {
+  //       const updatedDescriptions = mainCategory.descriptions.filter(
+  //         (description) => description.id !== descriptionId
+  //       );
+  //       const totalWeight = updatedDescriptions.reduce(
+  //         (acc, desc) => acc + parseInt(desc.weight || 0),
+  //         0
+  //       );
+  //       return {
+  //         ...mainCategory,
+  //         descriptions: updatedDescriptions,
+  //         weight: totalWeight,
+  //       };
+  //     }
+  //     return mainCategory;
+  //   });
+  //   setFormData(updatedFormData);
+  // };
 
   const handleAddButtonClicked = () => {
     // Calculate the percentage achieved for each description
@@ -371,13 +371,13 @@ const DynamicForm = () => {
                     <div className="add-button">
                       <button onClick={handleAddButtonClicked}>Add</button>
                     </div>
-                    <button
+                    {/* <button
                       onClick={() =>
                         handleRemoveDescription(mainCategory.id, description.id)
                       }
                     >
                       Remove
-                    </button>
+                    </button> */}
                   </td>
                 </tr>
               ))}
