@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import "../Styles/DynamicForm.css";
 
-const DynamicForm = () => {
+const AwarenessRaising = () => {
   const [formData, setFormData] = useState([
     {
       id: 1,
@@ -15,6 +15,7 @@ const DynamicForm = () => {
           target: "",
           actual: "",
           percentageAchieved: "",
+          prePercentageCalculated: "",
           startDate: "",
           endDate: "",
         },
@@ -35,6 +36,16 @@ const DynamicForm = () => {
     },
     {
       name: "Data Cleaning",
+      weight: 20,
+      defaultDescriptions: ["Data Validation", "Data Verification"],
+    },
+    {
+      name: "Plant and Maintenance Training |",
+      weight: 20,
+      defaultDescriptions: ["Data Validation", "Data Verification"],
+    },
+    {
+      name: "Plant and Maintenance Training ||",
       weight: 20,
       defaultDescriptions: ["Data Validation", "Data Verification"],
     },
@@ -70,38 +81,13 @@ const DynamicForm = () => {
             target: "",
             actual: "",
             percentageAchieved: "",
+            prePercentageCalculated: "",
             startDate: "",
             endDate: "",
           },
         ],
       },
     ]);
-  };
-
-  const handleAddDescription = (mainCategoryId) => {
-    const updatedFormData = formData.map((mainCategory) => {
-      if (mainCategory.id === mainCategoryId) {
-        const descriptionId = mainCategory.descriptions.length + 1;
-        return {
-          ...mainCategory,
-          descriptions: [
-            ...mainCategory.descriptions,
-            {
-              id: descriptionId,
-              weight: "",
-              description: "",
-              target: "",
-              actual: "",
-              percentageAchieved: "",
-              startDate: "",
-              endDate: "",
-            },
-          ],
-        };
-      }
-      return mainCategory;
-    });
-    setFormData(updatedFormData);
   };
 
   const handleChange = (e, mainCategoryId, descriptionId, field) => {
@@ -152,6 +138,7 @@ const DynamicForm = () => {
               target: `${(index + 1) * 1000}`, // Pre-populate target field with figures in thousands
               actual: "",
               percentageAchieved: "",
+              prePercentageCalculated: "",
               startDate: "",
               endDate: "",
             })),
@@ -170,27 +157,6 @@ const DynamicForm = () => {
     setFormData(updatedFormData);
   };
 
-  // const handleRemoveDescription = (mainCategoryId, descriptionId) => {
-  //   const updatedFormData = formData.map((mainCategory) => {
-  //     if (mainCategory.id === mainCategoryId) {
-  //       const updatedDescriptions = mainCategory.descriptions.filter(
-  //         (description) => description.id !== descriptionId
-  //       );
-  //       const totalWeight = updatedDescriptions.reduce(
-  //         (acc, desc) => acc + parseInt(desc.weight || 0),
-  //         0
-  //       );
-  //       return {
-  //         ...mainCategory,
-  //         descriptions: updatedDescriptions,
-  //         weight: totalWeight,
-  //       };
-  //     }
-  //     return mainCategory;
-  //   });
-  //   setFormData(updatedFormData);
-  // };
-
   const handleAddButtonClicked = () => {
     // Calculate the percentage achieved for each description
     const updatedFormData = formData.map((mainCategory) => {
@@ -198,17 +164,26 @@ const DynamicForm = () => {
         (description) => {
           const percentageAchieved =
             description.actual && description.target
-              ? (
-                  (parseFloat(description.actual) /
-                    parseFloat(description.target)) *
+              ? (parseFloat(description.actual) /
+                  parseFloat(description.target)) *
+                  100 +
+                "%"
+              : "";
+
+          const prePercentageCalculated =
+            description.actual && description.target
+              ? (parseFloat(description.actual) /
+                  parseFloat(description.target)) *
                   100 *
                   (parseFloat(description.weight) /
-                    parseFloat(mainCategory.weight))
-                ).toFixed(2)
+                    parseFloat(mainCategory.weight)) +
+                "%"
               : "";
+
           return {
             ...description,
             percentageAchieved,
+            prePercentageCalculated,
           };
         }
       );
@@ -222,9 +197,9 @@ const DynamicForm = () => {
 
   return (
     <div className="form-container">
+      <h3 className="main-category">Awareness Raising </h3>
       {formData.map((mainCategory) => (
         <div key={mainCategory.id} className="category">
-          <h3 className="main-category">Main Category</h3>
           <div className="add-main-category">
             <select
               value={mainCategory.mainCategory}
@@ -239,11 +214,11 @@ const DynamicForm = () => {
             </select>
             <div className="weight-container">
               <span>Main Category Weight: {mainCategory.weight}</span>
-              <span>Main Category Percentage: 100%</span>
               <span>
                 Total Percentage Achieved:{" "}
                 {mainCategory.descriptions.reduce(
-                  (acc, desc) => acc + parseFloat(desc.percentageAchieved || 0),
+                  (acc, desc) =>
+                    acc + parseFloat(desc.prePercentageCalculated || 0),
                   0
                 )}
                 %
@@ -262,6 +237,7 @@ const DynamicForm = () => {
                 <th>Target</th>
                 <th>Actual</th>
                 <th>Percentage Achieved</th>
+                {/* <th>Pre Calculated Percentage</th> */}
                 <th>Start Date</th>
                 <th>End Date</th>
                 <th>Action</th>
@@ -272,23 +248,6 @@ const DynamicForm = () => {
                 <tr key={description.id}>
                   <td>
                     <span>{description.weight}</span>
-                    {/* <input
-                      className="description-weight-input"
-                      type="text"
-                      value={description.weight}
-                      onChange={(e) =>
-                        handleChange(
-                          e,
-                          mainCategory.id,
-                          description.id,
-                          "weight"
-                        )
-                      }
-                    /> */}
-                    <span>
-                      ({(description.weight / mainCategory.weight) * 100}
-                      %)
-                    </span>
                   </td>
                   <td>
                     <input
@@ -339,6 +298,13 @@ const DynamicForm = () => {
                       readOnly
                     />
                   </td>
+                  {/* <td>
+                    <input
+                      type="text"
+                      value={description.prePercentageCalculated}
+                      readOnly
+                    />
+                  </td> */}
                   <td>
                     <input
                       type="date"
@@ -371,23 +337,11 @@ const DynamicForm = () => {
                     <div className="add-button">
                       <button onClick={handleAddButtonClicked}>Add</button>
                     </div>
-                    {/* <button
-                      onClick={() =>
-                        handleRemoveDescription(mainCategory.id, description.id)
-                      }
-                    >
-                      Remove
-                    </button> */}
                   </td>
                 </tr>
               ))}
             </tbody>
           </table>
-          <div className="add-description">
-            <button onClick={() => handleAddDescription(mainCategory.id)}>
-              Add Description
-            </button>
-          </div>
         </div>
       ))}
       <div className="add-main-category">
@@ -397,4 +351,4 @@ const DynamicForm = () => {
   );
 };
 
-export default DynamicForm;
+export default AwarenessRaising;

@@ -1,12 +1,12 @@
 import React from "react";
-import DynamicForm from "../components/DynamicForm";
 import AppraisalForm from "../components/AppraisalForm";
+import Nd from "../components/Nd";
 
 function EmployeesAppraisal() {
   return (
     <div>
       <AppraisalForm />
-      <DynamicForm />
+      <Nd />
     </div>
   );
 }
