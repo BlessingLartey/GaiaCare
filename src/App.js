@@ -5,7 +5,7 @@ import {
   createRoutesFromElements,
   RouterProvider,
 } from "react-router-dom";
-import Login from "./components/Login";
+// import Login from "./components/Login";
 import Profile from "./Pages/Profile";
 import Home from "./Pages/Home";
 import EmployeesAppraisal from "./Pages/EmployeesAppraisal";
@@ -17,11 +17,11 @@ import Dashboard from "./Pages/Dashboard";
 const router = createBrowserRouter(
   createRoutesFromElements(
     <Route path="/" element={<MainPageLayout />}>
-      <Route path="/" element={<Login />} />
-      <Route path="/home" element={<Home />}>
-        <Route index path="dashboard" element={<Dashboard />} />
+      {/* <Route path="/" element={<Login />} /> */}
+      <Route path="/" element={<Home />}>
+        <Route index element={<EmployeesAppraisal />} />
+        <Route path="dashboard" element={<Dashboard />} />
         <Route path="profile" element={<Profile />} />
-        <Route path="appraisal" element={<EmployeesAppraisal />} />
         <Route path="settings" element={<Settings />} />
       </Route>
       <Route path="*" element={<NotFound />} />
