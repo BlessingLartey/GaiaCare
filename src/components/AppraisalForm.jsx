@@ -1,6 +1,5 @@
 import React, { useState } from "react";
 import "../Styles/AppraisalForm.css";
-
 const AppraisalForm = () => {
   const [formData, setFormData] = useState({
     facilitatorName: "",

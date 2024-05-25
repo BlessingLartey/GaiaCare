@@ -34,7 +34,8 @@
 
 .input-container input[type="text"],
 .input-container input[type="date"],
-.input-container textarea {
+.input-container textarea,
+select {
   width: 100%;
   padding: 8px;
   box-sizing: border-box;
@@ -58,4 +59,8 @@
 
 .submit-button:hover {
   background-color: #0056b3;
+}
+
+.newafagro {
+  display: none;
 }

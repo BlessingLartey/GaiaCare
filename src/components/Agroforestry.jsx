@@ -1,4 +1,6 @@
 import React, { useState } from "react";
+// import { useParams } from "react-router-dom";
+
 import "../Styles/DynamicForm.css";
 
 const Agroforestry = () => {
@@ -15,7 +17,7 @@ const Agroforestry = () => {
           target: "",
           actual: "",
           percentageAchieved: "",
-          prePercentageCalculated: "",
+          totalPercentageAchieved: "",
           startDate: "",
           endDate: "",
         },
@@ -81,7 +83,7 @@ const Agroforestry = () => {
             target: "",
             actual: "",
             percentageAchieved: "",
-            prePercentageCalculated: "",
+            totalPercentageAchieved: "",
             startDate: "",
             endDate: "",
           },
@@ -138,7 +140,7 @@ const Agroforestry = () => {
               target: `${(index + 1) * 1000}`, // Pre-populate target field with figures in thousands
               actual: "",
               percentageAchieved: "",
-              prePercentageCalculated: "",
+              totalPercentageAchieved: "",
               startDate: "",
               endDate: "",
             })),
@@ -170,7 +172,7 @@ const Agroforestry = () => {
                 "%"
               : "";
 
-          const prePercentageCalculated =
+          const totalPercentageAchieved =
             description.actual && description.target
               ? (parseFloat(description.actual) /
                   parseFloat(description.target)) *
@@ -183,7 +185,7 @@ const Agroforestry = () => {
           return {
             ...description,
             percentageAchieved,
-            prePercentageCalculated,
+            totalPercentageAchieved,
           };
         }
       );
@@ -195,8 +197,41 @@ const Agroforestry = () => {
     setFormData(updatedFormData);
   };
 
+  const handleSubmit = (e) => {
+    e.preventDefault();
+
+    // Calculate the total percentage achieved
+    const totalPercentageAchieved = formData.reduce((acc, mainCategory) => {
+      const categoryTotal = mainCategory.descriptions.reduce(
+        (categoryAcc, description) => {
+          // Ensure that totalPercentageAchieved is a number before adding it to the accumulator
+          const percentage = parseFloat(description.totalPercentageAchieved);
+          return !isNaN(percentage) ? categoryAcc + percentage : categoryAcc;
+        },
+        0
+      );
+      return acc + categoryTotal;
+    }, 0);
+
+    // Fetch API to post data
+    fetch("http://localhost:3000/api/result", {
+      method: "POST",
+      body: JSON.stringify({
+        totalPercentageAchieved,
+        // name,
+        // department,
+      }),
+      headers: {
+        "Content-type": "application/json",
+      },
+    })
+      .then((res) => res.json())
+      .then((formData) => console.log(formData))
+      .catch((error) => console.error("Error:", error));
+  };
+
   return (
-    <div className="form-container">
+    <form onSubmit={handleSubmit} className="form-container">
       <h3 className="main-category">Agroforestry </h3>
       <div className="category">
         {formData.map((mainCategory) => (
@@ -215,11 +250,11 @@ const Agroforestry = () => {
               </select>
               <div className="weight-container">
                 <span>Main Category Weight: {mainCategory.weight}</span>
-                <span>
-                  Total Percentage Achieved:{" "}
+                <span id="percentageAchieved" name="percentageAchieved">
+                  Total Percentage Achieved:
                   {mainCategory.descriptions.reduce(
                     (acc, desc) =>
-                      acc + parseFloat(desc.prePercentageCalculated || 0),
+                      acc + parseFloat(desc.totalPercentageAchieved || 0),
                     0
                   )}
                   %
@@ -302,7 +337,7 @@ const Agroforestry = () => {
                     {/* <td>
                     <input
                       type="text"
-                      value={description.prePercentageCalculated}
+                      value={description.totalPercentageAchieved}
                       readOnly
                     />
                   </td> */}
@@ -348,8 +383,9 @@ const Agroforestry = () => {
       </div>
       <div className="add-main-category">
         <button onClick={handleAddRow}>Add Main Category</button>
+        <button type="submit">Submit</button>
       </div>
-    </div>
+    </form>
   );
 };
 
