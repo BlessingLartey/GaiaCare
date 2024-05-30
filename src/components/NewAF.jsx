@@ -6,12 +6,35 @@ import { useNavigate } from "react-router-dom";
 // import DepartmentPage from "./DepartmentPage";
 
 const NewAF = () => {
+  const [emailError, setEmailError] = useState("");
+
   const [formData, setFormData] = useState({
     name: "",
     email: "",
     departmentId: "",
     department: "",
   });
+
+  const handleEmailChange = (e) => {
+    const { value } = e.target;
+    handleChange(e);
+    const emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    if (!emailPattern.test(value)) {
+      setEmailError("Please enter a valid email address.");
+    } else {
+      setEmailError("");
+    }
+  };
+
+  const isFormValid = () => {
+    return (
+      formData.name &&
+      formData.email &&
+      formData.departmentId &&
+      formData.department &&
+      formData.appraisalDate
+    );
+  };
 
   const navigate = useNavigate();
 
@@ -22,8 +45,6 @@ const NewAF = () => {
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    // Handle form submission logic here
-    console.log("Form submitted:", formData);
 
     navigate(`/${formData.department}`);
 
@@ -34,10 +55,7 @@ const NewAF = () => {
       headers: {
         "Content-type": "application/json",
       },
-    })
-      .then((res) => res.json())
-      .then((formData) => console.log(formData))
-      .catch((error) => console.error("Error:", error));
+    }).then((res) => res.json());
 
     // Clear form fields after submission
     setFormData({
@@ -83,9 +101,10 @@ const NewAF = () => {
               id="email"
               name="email"
               value={formData.email}
-              onChange={handleChange}
+              onChange={handleEmailChange}
               required
             />
+            {emailError && <p style={{ color: "red" }}>{emailError}</p>}
           </div>
           <div className="input-container">
             <label htmlFor="department">Department:</label>
@@ -115,7 +134,11 @@ const NewAF = () => {
               required
             />
           </div>
-          <button className="submit-button" type="submit">
+          <button
+            className="submit-button"
+            type="submit"
+            disabled={!isFormValid()}
+          >
             submit
           </button>
         </div>
