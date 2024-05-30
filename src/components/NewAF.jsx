@@ -69,9 +69,9 @@ const NewAF = () => {
   // Render the form and Agroforestry component conditionally based on the selected department
   return (
     <div className="appraisal-form-container">
-      <h2>Facilitator Details Form</h2>
       <form onSubmit={handleSubmit}>
         <div className="facilitator-details">
+          <h2>Facilitator Details Form</h2>
           <div className="input-container">
             <label htmlFor="name">Facilitator Name:</label>
             <input
@@ -143,9 +143,6 @@ const NewAF = () => {
           </button>
         </div>
       </form>
-      {/* <div className="newafagro">
-        <Agroforestry name={formData.name} department={formData.department} />
-      </div> */}
     </div>
   );
 };

@@ -36,8 +36,8 @@ const AppraisalForm = () => {
 
   return (
     <div className="appraisal-form-container">
-      <h2>Facilitator Appraisal Form</h2>
       <form className="appraisal-form" onSubmit={handleSubmit}>
+        <h2>Facilitator Appraisal Form</h2>
         <div className="facilitator-details">
           <h3>Facilitator Details</h3>
 

@@ -23,6 +23,8 @@ const ImprovedCook = () => {
     },
   ]);
 
+  const [selectedOptions, setSelectedOptions] = useState([]);
+
   const options = [
     {
       name: "Socialization",
@@ -151,12 +153,22 @@ const ImprovedCook = () => {
         return mainCategory;
       });
       setFormData(updatedFormData);
+
+      setSelectedOptions([...selectedOptions, value]);
     }
   };
 
   const handleRemoveRow = (mainCategoryId) => {
     const updatedFormData = formData.filter(
       (mainCategory) => mainCategory.id !== mainCategoryId
+    );
+
+    // Update the selected options state
+    const removedCategory = formData.find(
+      (mainCategory) => mainCategory.id === mainCategoryId
+    ).mainCategory;
+    setSelectedOptions(
+      selectedOptions.filter((option) => option !== removedCategory)
     );
     setFormData(updatedFormData);
   };
@@ -199,159 +211,189 @@ const ImprovedCook = () => {
     setFormData(updatedFormData);
   };
 
+  const handleSubmit = (e) => {
+    e.preventDefault();
+
+    // Calculate the total percentage achieved
+    const totalPercentageAchieved = formData.reduce((acc, mainCategory) => {
+      const categoryTotal = mainCategory.descriptions.reduce(
+        (categoryAcc, description) => {
+          // Ensure that totalPercentageAchieved is a number before adding it to the accumulator
+          const percentage = parseFloat(description.totalPercentageAchieved);
+          return !isNaN(percentage) ? categoryAcc + percentage : categoryAcc;
+        },
+        0
+      );
+      return acc + categoryTotal;
+    }, 0);
+
+    // Fetch API to post data
+    fetch("http://localhost:3000/api/result", {
+      method: "POST",
+      body: JSON.stringify({
+        totalPercentageAchieved,
+      }),
+      headers: {
+        "Content-type": "application/json",
+      },
+    })
+      .then((res) => res.json())
+      .then((formData) => console.log(formData))
+      .catch((error) => console.error("Error:", error));
+  };
+
   return (
-    <div className="form-container">
-      <h3 className="main-category">Improved Cookstoves </h3>
-      {formData.map((mainCategory) => (
-        <div key={mainCategory.id} className="category">
-          <div className="add-main-category">
-            <select
-              value={mainCategory.mainCategory}
-              onChange={(e) => handleMainCategoryChange(e, mainCategory.id)}
-            >
-              <option value="">Select Main Category</option>
-              {options.map((option) => (
-                <option key={option.name} value={option.name}>
-                  {option.name}
-                </option>
-              ))}
-            </select>
-            <div className="weight-container">
-              <span>Main Category Weight: {mainCategory.weight}</span>
-              <span>
-                Total Percentage Achieved:{" "}
-                {mainCategory.descriptions.reduce(
-                  (acc, desc) =>
-                    acc + parseFloat(desc.prePercentageCalculated || 0),
-                  0
-                )}
-                %
-              </span>
+    <form onSubmit={handleSubmit} className="form-container">
+      <h3 className="main-category">Improved Cookstove </h3>
+      <div className="category">
+        {formData.map((mainCategory) => (
+          <div key={mainCategory.id}>
+            <div className="add-main-category">
+              <select
+                value={mainCategory.mainCategory}
+                onChange={(e) => handleMainCategoryChange(e, mainCategory.id)}
+              >
+                <option value="">Select Main Category</option>
+                {options.map((option) => (
+                  <option
+                    key={option.name}
+                    value={option.name}
+                    disabled={selectedOptions.includes(option.name)}
+                  >
+                    {option.name}
+                  </option>
+                ))}
+              </select>
+              <div className="weight-container">
+                <span>Main Category Weight: {mainCategory.weight}</span>
+                <span id="percentageAchieved" name="percentageAchieved">
+                  Total Percentage Achieved:
+                  {mainCategory.descriptions.reduce(
+                    (acc, desc) =>
+                      acc + parseFloat(desc.totalPercentageAchieved || 0),
+                    0
+                  )}
+                  %
+                </span>
+              </div>
+              <button onClick={() => handleRemoveRow(mainCategory.id)}>
+                Remove Main Category
+              </button>
             </div>
-            <button onClick={() => handleRemoveRow(mainCategory.id)}>
-              Remove Main Category
-            </button>
-          </div>
-          <h4>Description</h4>
-          <table className="description-table">
-            <thead>
-              <tr>
-                <th>Weight</th>
-                <th>Description</th>
-                <th>Target</th>
-                <th>Actual</th>
-                <th>Percentage Achieved</th>
-                {/* <th>Pre Calculated Percentage</th> */}
-                <th>Start Date</th>
-                <th>End Date</th>
-                <th>Action</th>
-              </tr>
-            </thead>
-            <tbody>
-              {mainCategory.descriptions.map((description) => (
-                <tr key={description.id}>
-                  <td>
-                    <span>{description.weight}</span>
-                  </td>
-                  <td>
-                    <input
-                      type="text"
-                      value={description.description}
-                      onChange={(e) =>
-                        handleChange(
-                          e,
-                          mainCategory.id,
-                          description.id,
-                          "description"
-                        )
-                      }
-                    />
-                  </td>
-                  <td>
-                    <input
-                      type="text"
-                      value={description.target}
-                      onChange={(e) =>
-                        handleChange(
-                          e,
-                          mainCategory.id,
-                          description.id,
-                          "target"
-                        )
-                      }
-                    />
-                  </td>
-                  <td>
-                    <input
-                      type="text"
-                      value={description.actual}
-                      onChange={(e) =>
-                        handleChange(
-                          e,
-                          mainCategory.id,
-                          description.id,
-                          "actual"
-                        )
-                      }
-                    />
-                  </td>
-                  <td>
-                    <input
-                      type="text"
-                      value={description.percentageAchieved}
-                      readOnly
-                    />
-                  </td>
-                  {/* <td>
-                    <input
-                      type="text"
-                      value={description.prePercentageCalculated}
-                      readOnly
-                    />
-                  </td> */}
-                  <td>
-                    <input
-                      type="date"
-                      value={description.startDate}
-                      onChange={(e) =>
-                        handleChange(
-                          e,
-                          mainCategory.id,
-                          description.id,
-                          "startDate"
-                        )
-                      }
-                    />
-                  </td>
-                  <td>
-                    <input
-                      type="date"
-                      value={description.endDate}
-                      onChange={(e) =>
-                        handleChange(
-                          e,
-                          mainCategory.id,
-                          description.id,
-                          "endDate"
-                        )
-                      }
-                    />
-                  </td>
-                  <td className="action-buttons">
-                    <div className="add-button">
-                      <button onClick={handleAddButtonClicked}>Add</button>
-                    </div>
-                  </td>
+            <h4>Description</h4>
+            <table className="description-table">
+              <thead>
+                <tr>
+                  <th>Weight</th>
+                  <th>Description</th>
+                  <th>Target</th>
+                  <th>Actual</th>
+                  <th>Percentage Achieved</th>
+                  <th>Start Date</th>
+                  <th>End Date</th>
+                  <th>Action</th>
                 </tr>
-              ))}
-            </tbody>
-          </table>
-        </div>
-      ))}
+              </thead>
+              <tbody>
+                {mainCategory.descriptions.map((description) => (
+                  <tr key={description.id}>
+                    <td>
+                      <span>{description.weight}</span>
+                    </td>
+                    <td>
+                      <input
+                        type="text"
+                        value={description.description}
+                        onChange={(e) =>
+                          handleChange(
+                            e,
+                            mainCategory.id,
+                            description.id,
+                            "description"
+                          )
+                        }
+                      />
+                    </td>
+                    <td>
+                      <input
+                        type="text"
+                        value={description.target}
+                        onChange={(e) =>
+                          handleChange(
+                            e,
+                            mainCategory.id,
+                            description.id,
+                            "target"
+                          )
+                        }
+                      />
+                    </td>
+                    <td>
+                      <input
+                        type="text"
+                        value={description.actual}
+                        onChange={(e) =>
+                          handleChange(
+                            e,
+                            mainCategory.id,
+                            description.id,
+                            "actual"
+                          )
+                        }
+                      />
+                    </td>
+                    <td>
+                      <input
+                        type="text"
+                        value={description.percentageAchieved}
+                        readOnly
+                      />
+                    </td>
+                    <td>
+                      <input
+                        type="date"
+                        value={description.startDate}
+                        onChange={(e) =>
+                          handleChange(
+                            e,
+                            mainCategory.id,
+                            description.id,
+                            "startDate"
+                          )
+                        }
+                      />
+                    </td>
+                    <td>
+                      <input
+                        type="date"
+                        value={description.endDate}
+                        onChange={(e) =>
+                          handleChange(
+                            e,
+                            mainCategory.id,
+                            description.id,
+                            "endDate"
+                          )
+                        }
+                      />
+                    </td>
+                    <td className="action-buttons">
+                      <div className="add-button">
+                        <button onClick={handleAddButtonClicked}>Add</button>
+                      </div>
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+        ))}
+      </div>
       <div className="add-main-category">
         <button onClick={handleAddRow}>Add Main Category</button>
+        <button type="submit">Submit</button>
       </div>
-    </div>
+    </form>
   );
 };
 
