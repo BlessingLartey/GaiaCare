@@ -2,21 +2,16 @@
 
 .appraisal-form-container {
   margin: 20px;
-  align-items: center;
 }
 
 .appraisal-form-container h2 {
-  margin-bottom: 20px;
+  text-align: center;
 }
-
-/* .appraisal-form {
-  display: flex;
-} */
 
 .facilitator-details,
 .supervisor-details {
   margin: auto;
-  width: 50%;
+  width: 100%;
 }
 
 .facilitator-details h3,
@@ -71,4 +66,26 @@ button[disabled] {
 
 .newafagro {
   display: none;
+}
+
+/* Responsive Styles */
+@media (min-width: 768px) {
+  .facilitator-details,
+  .supervisor-details {
+    width: 75%;
+  }
+}
+
+@media (min-width: 1024px) {
+  .facilitator-details,
+  .supervisor-details {
+    width: 50%;
+  }
+}
+
+@media (min-width: 1200px) {
+  .facilitator-details,
+  .supervisor-details {
+    width: 40%;
+  }
 }
