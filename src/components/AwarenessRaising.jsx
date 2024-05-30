@@ -23,7 +23,7 @@ const AwarenessRaising = () => {
     },
   ]);
 
-  const [selectedOptions, setSelectedOptions] = [];
+  const [selectedOptions, setSelectedOptions] = useState([]);
 
   const options = [
     {
